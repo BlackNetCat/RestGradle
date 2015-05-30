@@ -7,5 +7,5 @@ import javax.ws.rs.core.Application;
 
 
 @ApplicationPath("rest")
-public class HelloWorldApplication extends Application {
+public class MyApp extends javax.ws.rs.core.Application {
 }
