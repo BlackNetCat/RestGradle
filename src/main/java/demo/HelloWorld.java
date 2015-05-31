@@ -17,7 +17,7 @@ import java.util.*;
 @Path("/")
 public class HelloWorld {
 
-    /*private static Map<Integer, Person> persons = new HashMap<Integer, Person>();
+    private static Map<Integer, Person> persons = new HashMap<Integer, Person>();
 
 
     static {
@@ -30,40 +30,11 @@ public class HelloWorld {
 
             persons.put(id, person);
         }
-    }*/
-    private PersonDao personDao = new PersonDao();
-
-    @GET
-    @Path("/getPersonByIdXML/{id}")
-    @Produces(MediaType.APPLICATION_XML)
-    public Person getPersonByIdXML(@PathParam("id")int id) {
-        return personDao.getPersonById(id);
     }
 
-    @GET
-    @Path("/getPersonByIdJSON/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Person getPersonByIdJSON(@PathParam("id")int id) {
-        return personDao.getPersonById(id);
-    }
-
-    @GET
-     @Path("/getAllPersonByInXML")
-     @Produces(MediaType.APPLICATION_XML)
-     public List<Person> getAllPersonInXML() {
-        return personDao.getAllPersons();
-    }
-
-    @GET
-    @Path("/getAllPersonByInJSON")
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<Person> getAllPersonInJSON() {
-        return personDao.getAllPersons();
-    }
 
     @Inject
     HelloService helloService;
-
 
     @GET
     @Path("json")

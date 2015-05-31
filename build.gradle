@@ -14,6 +14,12 @@ repositories {
     mavenCentral()
 }
 
+
+
+/*configurations{
+    js
+}*/
+
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
     compile 'org.codehaus.groovy:groovy-all:2.4.3'
@@ -21,4 +27,13 @@ dependencies {
     compile 'org.wildfly:wildfly-spec-api:8.2.0.Final'
     compile 'mysql:mysql-connector-java:5.1.35'
     compile 'org.hibernate:hibernate-core:4.2.2.Final'
+   /* js group: 'jquery', name: 'jquery', version: '1.6.4', classifier: 'min', ext: "js"*/
+
 }
+
+/*
+}
+task fetchJs(type: Copy) {
+    from configurations.js
+    into "$buildDir/js"
+}*/
