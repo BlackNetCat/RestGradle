@@ -1,5 +1,7 @@
 package demo;
 
+import services.HelloService;
+
 import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonObject;

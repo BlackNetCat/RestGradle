@@ -1,9 +1,9 @@
 
-package demo;
+package services;
 
 public class HelloService {
 
-    String createHelloMessage(String name) {
+    public String createHelloMessage(String name) {
         return "Hello " + name + "!";
     }
 

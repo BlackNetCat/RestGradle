@@ -83,4 +83,29 @@ public class PersonDao {
         }
         return hasErrors;
     }
+
+    public boolean deletePerson(Person person) {
+        Session session = null;
+        boolean hasErrors = false;
+
+        try {
+            session = sessionFactory.openSession();
+            session.beginTransaction();
+            session.delete(person);
+            session.getTransaction().commit();
+        }
+        catch (Exception ex) {
+            if (session != null) {
+                session.getTransaction().rollback();
+
+            }
+            hasErrors = true;
+        }
+        finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+        return hasErrors;
+    }
 }

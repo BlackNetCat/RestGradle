@@ -7,17 +7,15 @@ import dao.PersonDao;
 import model.Person;
 
 import javax.inject.Inject;
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.*;
 
 @Path("/")
 public class PersonService {
+
+    @Inject
+    HelloService helloService;
 
     private PersonDao personDao = new PersonDao();
 
@@ -83,5 +81,45 @@ public class PersonService {
         }
 
     }
+
+    @GET
+    @Path("/deletePerson/{id}")
+    @Produces(MediaType.APPLICATION_JSON + ";charset=UTF-8")
+    public String deletePersonByIdJSON(@PathParam("id")int id) {
+        Person person = new Person();
+        person = personDao.getPersonById(id);
+        personDao.deletePerson(person);
+
+        if (!personDao.deletePerson(person)) {
+            return "{\"status\":\"ok\"}";
+        }
+        else {
+            return "{\"status\":\"not ok\"}";
+        }
+    }
+
+    @GET
+    @Path("/helloPersonXML/{id}")
+    @Produces(MediaType.APPLICATION_XML)
+    public String getHelloXML(@PathParam("id")int id) {
+        String str = personDao.getPersonById(id).getFullName();
+
+        return "<xml><result>" + helloService.createHelloMessage(str) + "</result></xml>";
+    }
+
+    @GET
+    @Path("/helloPersonJSON/{id}")
+    @Produces(MediaType.APPLICATION_JSON + ";charset=UTF-8")
+    public String getHelloJSON(@PathParam("id")int id) {
+        String str = personDao.getPersonById(id).getFullName();
+        return helloService.createHelloMessage(str);
+    }
+
+
+
+
+
+
+
 
 }
