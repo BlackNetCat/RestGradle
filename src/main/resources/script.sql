@@ -7,6 +7,8 @@ primary key (id)
 );
 
 insert into person (full_name, age)
-values ("Scala Johanson", 24);
+values ("Scarlett Johanson", 34);
 insert into person (full_name, age)
-values ("Mona Lisa Harddrive", 47);
+values ("Bruce Willis", 47);
+insert into person (full_name, age)
+values ("Чак Норрис", 50);

@@ -30,7 +30,7 @@ public class PersonService {
 
     @GET
     @Path("/getPersonByIdJSON/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON + ";charset=UTF-8")
     public Person getPersonByIdJSON(@PathParam("id")int id) {
         return personDao.getPersonById(id);
     }
@@ -44,11 +44,10 @@ public class PersonService {
 
     @GET
     @Path("/getAllPersonByInJSON")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON + ";charset=UTF-8")
     public List<Person> getAllPersonInJSON() {
         return personDao.getAllPersons();
     }
-
 
     @GET
     @Path("/savePerson/{fullName}/{age}")
@@ -67,7 +66,6 @@ public class PersonService {
 
     }
 
-
     @GET
     @Path ("/savePerson/{id}/{fullName}/{age}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -85,6 +83,5 @@ public class PersonService {
         }
 
     }
-
 
 }
