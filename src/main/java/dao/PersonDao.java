@@ -1,111 +1,39 @@
 package dao;
 
+import model.Address;
 import model.Person;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import util.HibernateUtil;
 
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.List;
 
-/**
- * Created by netcat on 30.05.2015.
- */
+@Stateless
 public class PersonDao {
 
-    SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+    @PersistenceContext(unitName = "Persons")
+    private EntityManager em;
+
+    public void persist(Object entity){
+        em.persist(entity);
+    }
 
     public Person getPersonById(int id) {
-        Person person = null;
-        Session session = null;
-        try {
-            session = sessionFactory.openSession();
-            session.beginTransaction();
-            person = (Person) session.createQuery("from Person p where p.id = :id").setParameter("id", id).uniqueResult();
-            session.getTransaction().commit();
-        }
-        catch (Exception ex) {
-            if (session != null) {
-                session.getTransaction().rollback();
-            }
-        }
-        finally {
-            if (session != null) {
-                session.close();
-            }
-        }
+        return em.find(Person.class, id);
+    }
 
-        return person;
+    public List<Person> getCustom() {
+        String q = "select p.fullName, a.city from Person p join Address a on a.person.id = p.id";
+        return em.createQuery(q,Person.class).getResultList();
     }
 
     public List<Person> getAllPersons() {
-        List<Person> persons = null;
-        Session session = null;
-        try {
-            session = sessionFactory.openSession();
-            session.beginTransaction();
-            persons = session.createQuery("from Person p").list();
-            session.getTransaction().commit();
-        }
-        catch (Exception ex) {
-            if (session != null) {
-                session.getTransaction().rollback();
-            }
-        }
-        finally {
-            if (session != null) {
-                session.close();
-            }
-        }
-        return persons;
+        String q = "SELECT p FROM Person p";
+        return em.createQuery(q,Person.class).getResultList();
     }
 
-    public boolean savePerson(Person person) {
-        Session session = null;
-        boolean hasErrors = false;
-
-        try {
-            session = sessionFactory.openSession();
-            session.beginTransaction();
-            session.saveOrUpdate(person);
-            session.getTransaction().commit();
-        }
-        catch (Exception ex) {
-            if (session != null) {
-                session.getTransaction().rollback();
-
-            }
-            hasErrors = true;
-        }
-        finally {
-            if (session != null) {
-                session.close();
-            }
-        }
-        return hasErrors;
-    }
-
-    public boolean deletePerson(Person person) {
-        Session session = null;
-        boolean hasErrors = false;
-
-        try {
-            session = sessionFactory.openSession();
-            session.beginTransaction();
-            session.delete(person);
-            session.getTransaction().commit();
-        }
-        catch (Exception ex) {
-            if (session != null) {
-                session.getTransaction().rollback();
-
-            }
-            hasErrors = true;
-        }
-        finally {
-            if (session != null) {
-                session.close();
-            }
-        }
-        return hasErrors;
+    public void deletePerson(int id) {
+        String q = "DELETE FROM Person p WHERE p.id = ?1";
+        em.createQuery(q).setParameter(1, id).executeUpdate();
     }
 }

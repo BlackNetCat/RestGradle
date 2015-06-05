@@ -4,48 +4,43 @@ package model;
  * Created by netcat on 30.05.2015.
  */
 
-import javax.persistence.*;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
+import lombok.Data;
 
+import javax.persistence.*;
+import javax.xml.bind.annotation.*;
+import java.util.Set;
+
+@Data
 @Entity
 @Table(name="person")
 @XmlRootElement(name = "person")
+@XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder = {"id", "fullName", "age"})
 public class Person {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name="id")
-    private int id;
+    private Integer id;
+
     @Column(name="full_name")
     private String fullName;
+
     @Column(name="age")
     private int age;
 
-    @XmlElement
-    public int getId() {
-        return id;
+    @OneToMany(mappedBy = "person", cascade={CascadeType.ALL})
+    private Set<Address> address;
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Person{");
+        sb.append("id=").append(id);
+        sb.append(", fullName='").append(fullName).append('\'');
+        sb.append(", age=").append(age);
+        sb.append('}');
+        return sb.toString();
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-    @XmlElement
-    public String getFullName() {
-        return fullName;
-    }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-    @XmlElement
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
 }

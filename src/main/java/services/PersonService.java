@@ -3,123 +3,82 @@ package services;
 /**
  * Created by netcat on 31.05.2015.
  */
+import classes.MethodResult;
 import dao.PersonDao;
+import lombok.extern.slf4j.Slf4j;
 import model.Person;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.*;
 
-@Path("/")
+
+@Slf4j
+@Stateless
+@Path("/person")
+@Consumes({"application/json","application/xml"})
+@Produces({"application/json","application/xml"})
 public class PersonService {
 
     @Inject
-    HelloService helloService;
-
-    private PersonDao personDao = new PersonDao();
+    private PersonDao personDao;
 
     @GET
-    @Path("/getPersonByIdXML/{id}")
-    @Produces(MediaType.APPLICATION_XML)
-    public Person getPersonByIdXML(@PathParam("id")int id) {
+    @Path("/get/{id}")
+    public Person getPersonById(@PathParam("id")int id) {
         return personDao.getPersonById(id);
     }
 
     @GET
-    @Path("/getPersonByIdJSON/{id}")
-    @Produces(MediaType.APPLICATION_JSON + ";charset=UTF-8")
-    public Person getPersonByIdJSON(@PathParam("id")int id) {
-        return personDao.getPersonById(id);
-    }
-
-    @GET
-    @Path("/getAllPersonByInXML")
-    @Produces(MediaType.APPLICATION_XML)
+    @Path("/get")
     public List<Person> getAllPersonInXML() {
         return personDao.getAllPersons();
     }
 
     @GET
-    @Path("/getAllPersonByInJSON")
-    @Produces(MediaType.APPLICATION_JSON + ";charset=UTF-8")
-    public List<Person> getAllPersonInJSON() {
-        return personDao.getAllPersons();
+    @Path("/getc")
+    public List<Person> getAllPerson2() {
+        return personDao.getCustom();
     }
 
-    @GET
-    @Path("/savePerson/{fullName}/{age}")
+
+
+    @POST
+    @Path("/save")
     @Produces(MediaType.APPLICATION_JSON)
-    public String savePerson(@PathParam("fullName") String fullName, @PathParam("age") int age ) {
-        Person person = new Person();
-        person.setFullName(fullName);
-        person.setAge(age);
-
-        if (!personDao.savePerson(person)) {
-            return "{\"status\":\"ok\"}";
+    public MethodResult savePerson(Person person ) {
+        try {
+            if (person.getId() != null) {
+                Person personForUpdate = personDao.getPersonById(person.getId());
+                if (personForUpdate !=null){
+                    personForUpdate.setFullName(person.getFullName());
+                    personForUpdate.setAge(person.getAge());
+                } else {
+                    person.setId(null);
+                    personDao.persist(person);
+                }
+            } else {
+                personDao.persist(person);
+            }
+        } catch (Exception e) {
+            log.error("---Error saving person {} with error: {}", person, e.getMessage(), e);
+            return new MethodResult("Exception: "+e.getMessage());
         }
-        else {
-            return "{\"status\":\"not ok\"}";
-        }
-
+        return new MethodResult("OK");
     }
 
-    @GET
-    @Path ("/savePerson/{id}/{fullName}/{age}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public String updatePerson(@PathParam("id") int id, @PathParam("fullName") String fullName, @PathParam("age") int age) {
-        Person person = new Person();
-        person.setId(id);
-        person.setFullName(fullName);
-        person.setAge(age);
-
-        if (!personDao.savePerson(person)) {
-            return "{\"status\":\"ok\"}";
+    @DELETE
+    @Path("/delete/{id}")
+    public MethodResult deletePersonByIdJSON(@PathParam("id")int id) {
+        try {
+            personDao.deletePerson(id);
+        } catch (Exception e) {
+            log.error("---Error deleting person for id {} with error: {}", id, e.getMessage(), e);
+            return new MethodResult("Exception: "+e.getMessage());
         }
-        else {
-            return "{\"status\":\"not ok\"}";
-        }
-
+        return new MethodResult("OK");
     }
-
-    @GET
-    @Path("/deletePerson/{id}")
-    @Produces(MediaType.APPLICATION_JSON + ";charset=UTF-8")
-    public String deletePersonByIdJSON(@PathParam("id")int id) {
-        Person person = new Person();
-        person = personDao.getPersonById(id);
-        personDao.deletePerson(person);
-
-        if (!personDao.deletePerson(person)) {
-            return "{\"status\":\"ok\"}";
-        }
-        else {
-            return "{\"status\":\"not ok\"}";
-        }
-    }
-
-    @GET
-    @Path("/helloPersonXML/{id}")
-    @Produces(MediaType.APPLICATION_XML)
-    public String getHelloXML(@PathParam("id")int id) {
-        String str = personDao.getPersonById(id).getFullName();
-
-        return "<xml><result>" + helloService.createHelloMessage(str) + "</result></xml>";
-    }
-
-    @GET
-    @Path("/helloPersonJSON/{id}")
-    @Produces(MediaType.APPLICATION_JSON + ";charset=UTF-8")
-    public String getHelloJSON(@PathParam("id")int id) {
-        String str = personDao.getPersonById(id).getFullName();
-        return helloService.createHelloMessage(str);
-    }
-
-
-
-
-
-
-
 
 }

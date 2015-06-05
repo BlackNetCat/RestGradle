@@ -2,38 +2,37 @@ apply plugin: 'java'
 apply plugin: 'groovy'
 apply plugin: 'war'
 
-/*war {
-    baseName = 'rest'
-    version =  '0.0.0'
-}*/
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.4'
+    distributionUrl = 'http://services.gradle.org/distributions/gradle-2.4-all.zip'
+}
 
-sourceCompatibility = 1.5
 version = '1.0'
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
 
 
-/*configurations{
-    js
-}*/
+
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
-    compile 'org.codehaus.groovy:groovy-all:2.4.3'
-    providedCompile group: 'javax', name:'javaee-api', version:'7.0'
+
+    providedCompile('org.jboss.spec:jboss-javaee-7.0:1.0.1.Final')
+    providedCompile 'org.jboss.resteasy:resteasy-jaxrs:3.0.9.Final'
+    providedCompile 'org.jboss.resteasy:resteasy-jackson2-provider:3.0.7.Final'
+    providedCompile('org.projectlombok:lombok:1.16.4')
+    providedCompile('org.slf4j:slf4j-api:1.7.2')
+
+    /*providedCompile group: 'javax', name:'javaee-api', version:'7.0'
     compile 'org.wildfly:wildfly-spec-api:8.2.0.Final'
     compile 'mysql:mysql-connector-java:5.1.35'
     compile 'org.hibernate:hibernate-core:4.2.2.Final'
-   /* js group: 'jquery', name: 'jquery', version: '1.6.4', classifier: 'min', ext: "js"*/
+    compile 'org.hibernate.ogm:hibernate-ogm-core:4.2.0.CR1'*/
+
 
 }
 
-/*
-}
-task fetchJs(type: Copy) {
-    from configurations.js
-    into "$buildDir/js"
-}*/
